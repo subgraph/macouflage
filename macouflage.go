@@ -5,19 +5,11 @@ import (
 	"fmt"
 	lmf "github.com/subgraph/libmacouflage"
 )
-func getMacInfo(name string) (result string, err error) {
-	currentMac, err := lmf.GetCurrentMac(name)
+
+func getCurrentMacInfo(name string) (result string, err error) {
+	currentMacInfo, err := getMacInfo(name, "CurrentMAC")
 	if err != nil {
 		return
-	}
-	currentMacVendor, err := lmf.FindVendorByMac(currentMac.String())
-	if err != nil {
-		if strings.HasPrefix(err.Error(),
-			"No vendor found in OuiDb for vendor prefix") {
-			currentMacVendor.Vendor = "Unknown"
-		} else {
-			return
-		}
 	}
 	permanentMac, err := lmf.GetPermanentMac(name)
 	if err != nil {
@@ -32,10 +24,28 @@ func getMacInfo(name string) (result string, err error) {
 			return
 		}
 	}
-
-	result = fmt.Sprintf("Current MAC: %s (%s)\nPermanent MAC: %s (%s)",
-		currentMac, currentMacVendor.Vendor,
+	result = fmt.Sprintf("%sPermanent MAC:\t%s (%s)",
+		currentMacInfo,
 		permanentMac, permanentMacVendor.Vendor)
+	return
+}
+
+func getMacInfo(name string, macType string) (result string, err error) {
+	newMac, err := lmf.GetCurrentMac(name)
+	if err != nil {
+		return
+	}
+	newMacVendor, err := lmf.FindVendorByMac(newMac.String())
+	if err != nil {
+		if strings.HasPrefix(err.Error(),
+			"No vendor found in OuiDb for vendor prefix") {
+			newMacVendor.Vendor = "Unknown"
+		} else {
+			return
+		}
+	}
+	result = fmt.Sprintf("%s:\t%s (%s)\n",
+		macType, newMac, newMacVendor.Vendor)
 	return
 }
 
@@ -64,6 +74,27 @@ func listVendors(keyword string, isPopular bool) (results string, err error) {
 				result.VendorPrefix, result.Vendor))
 		}
 		results = strings.Join(vendors, "\n")
+	}
+	return
+}
+
+func spoofMacEnding(name string) (err error) {
+	currentMacInfo, err := getCurrentMacInfo(name)
+	if err != nil {
+		return
+	}
+	fmt.Println(currentMacInfo)
+	changed, err := lmf.SpoofMacSameVendor(name, true)
+	if err != nil {
+		return
+	}
+	if changed {
+		newMac, err2 := getMacInfo(name, "New MAC")
+		if err2 != nil {
+			err = err2
+			return
+		}
+		fmt.Printf(newMac)
 	}
 	return
 }

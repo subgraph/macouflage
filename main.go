@@ -24,6 +24,11 @@ func main() {
 			Action: show,
 		},
 		{
+			Name: "ending",
+			Usage: "Don't change the vendor bytes (generate last three bytes: XX:XX:XX:??:??:??",
+			Action: ending,
+		},
+		{
 			Name: "list",
 			Usage: "Print known vendors",
 			Action: list,
@@ -45,7 +50,7 @@ func main() {
 }
 
 func show(c *cli.Context)  {
-	result, err := getMacInfo(c.Args().First())
+	result, err := getCurrentMacInfo(c.Args().First())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,4 +79,11 @@ func search(c *cli.Context) {
 		log.Fatal(err)
 	}
 	fmt.Println(results)
+}
+
+func ending(c *cli.Context) {
+	err := spoofMacEnding(c.Args().First())
+	if err != nil {
+		log.Fatal(err)
+	}
 }
