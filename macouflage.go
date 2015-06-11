@@ -98,3 +98,25 @@ func spoofMacEnding(name string) (err error) {
 	}
 	return
 }
+
+func spoofMacAnother(name string) (err error) {
+	currentMacInfo, err := getCurrentMacInfo(name)
+	if err != nil {
+		return
+	}
+	fmt.Println(currentMacInfo)
+	changed, err := lmf.SpoofMacSameDeviceType(name)
+	if err != nil {
+		return
+	}
+	if changed {
+		newMac, err2 := getMacInfo(name, "New MAC")
+		if err2 != nil {
+			err = err2
+			return
+		}
+		fmt.Printf(newMac)
+	}
+	return
+}
+

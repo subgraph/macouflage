@@ -29,6 +29,11 @@ func main() {
 			Action: ending,
 		},
 		{
+			Name: "another",
+			Usage: "Set random vendor MAC of the same kind",
+			Action: another,
+		},
+		{
 			Name: "list",
 			Usage: "Print known vendors",
 			Action: list,
@@ -83,6 +88,13 @@ func search(c *cli.Context) {
 
 func ending(c *cli.Context) {
 	err := spoofMacEnding(c.Args().First())
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func another(c *cli.Context) {
+	err := spoofMacAnother(c.Args().First())
 	if err != nil {
 		log.Fatal(err)
 	}
