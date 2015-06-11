@@ -140,3 +140,32 @@ func spoofMacAny(name string) (err error) {
 	}
 	return
 }
+
+func revertMac(name string) (err error) {
+	currentMacInfo, err := getCurrentMacInfo(name)
+	if err != nil {
+		return
+	}
+	fmt.Println(currentMacInfo)
+	permMac, err := lmf.GetPermanentMac(name)
+	if err != nil {
+		return
+	}
+	err = lmf.RevertMac(name)
+	if err != nil {
+		return
+	}
+	newMac, err := lmf.GetCurrentMac(name)
+	if err != nil {
+		return
+	}
+	if lmf.CompareMacs(permMac, newMac) {
+		newMac, err2 := getMacInfo(name, "New MAC")
+		if err2 != nil {
+			err = err2
+			return
+		}
+		fmt.Printf(newMac)
+	}
+	return
+}

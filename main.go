@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"github.com/codegangsta/cli"
-
 )
 
 func main() {
@@ -37,6 +36,11 @@ func main() {
 			Name: "any",
 			Usage: "Set random vendor MAC of any kind",
 			Action: any,
+		},
+		{
+			Name: "permanent",
+			Usage: "Reset to original, permanent hardware MAC",
+			Action: permanent,
 		},
 		{
 			Name: "list",
@@ -112,3 +116,9 @@ func any(c *cli.Context) {
 	}
 }
 
+func permanent(c *cli.Context) {
+	err := revertMac(c.Args().First())
+	if err != nil {
+		log.Fatal(err)
+	}
+}
