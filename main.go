@@ -34,6 +34,11 @@ func main() {
 			Action: another,
 		},
 		{
+			Name: "any",
+			Usage: "Set random vendor MAC of any kind",
+			Action: any,
+		},
+		{
 			Name: "list",
 			Usage: "Print known vendors",
 			Action: list,
@@ -99,3 +104,11 @@ func another(c *cli.Context) {
 		log.Fatal(err)
 	}
 }
+
+func any(c *cli.Context) {
+	err := spoofMacAny(c.Args().First())
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
