@@ -3,6 +3,7 @@ package main
 import (
 	"strings"
 	"fmt"
+	"net"
 	lmf "github.com/subgraph/libmacouflage"
 )
 
@@ -191,3 +192,32 @@ func spoofMacRandom(name string, bia bool) (err error) {
 	return
 }
 
+func spoofMac(name string, mac string) (err error) {
+	currentMacInfo, err := getCurrentMacInfo(name)
+	if err != nil {
+		return
+	}
+	fmt.Println(currentMacInfo)
+	pMac, err := net.ParseMAC(mac)
+	if err != nil {
+		return
+	}
+	err = lmf.SetMac(name, mac)
+	if err != nil {
+		return
+	}
+	newMac, err := lmf.GetCurrentMac(name)
+	if err != nil {
+		return
+	}
+	changed := lmf.CompareMacs(pMac, newMac)
+	if changed {
+		newMacInfo, err2 := getMacInfo(name, "New MAC")
+		if err2 != nil {
+			err = err2
+			return
+		}
+		fmt.Printf(newMacInfo)
+	}
+	return
+}

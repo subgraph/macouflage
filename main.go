@@ -34,7 +34,7 @@ func main() {
 		},
 		{
 			Name: "ending",
-			Usage: "Don't change the vendor bytes (generate last three bytes: XX:XX:XX:??:??:??",
+			Usage: "Don't change the vendor bytes (generate last three bytes: XX:XX:XX:??:??:??)",
 			Action: ending,
 		},
 		{
@@ -73,6 +73,11 @@ func main() {
 			Name: "search",
 			Usage: "Search vendor names",
 			Action: search,
+		},
+		{
+			Name: "mac",
+			Usage: "Set the MAC XX:XX:XX:XX:XX:XX",
+			Action: mac,
 		},
 	}
 	app.Run(os.Args)
@@ -170,5 +175,20 @@ func random(c *cli.Context) {
 		if err != nil {
 			log.Fatal(err)
 		}
+	}
+}
+
+func mac(c *cli.Context) {
+	if c.Args().First() == "" {
+		log.Fatal("No MAC address argument specified")
+	}
+	iface := c.GlobalString("i")
+	if iface != "" && c.Args().First() != "" {
+		err := spoofMac(iface, c.Args().First())
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Fatal("No target device provided via -i, --interface argument")
 	}
 }
