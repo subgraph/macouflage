@@ -15,6 +15,10 @@ func main() {
 	app.Author = "David McKinney"
 	app.Email = "mckinney@subgraph.com"
 	app.Flags = []cli.Flag {
+			cli.StringFlag{
+				Name: "i, interface",
+				Usage: "Target device (required)",
+			},
 			cli.BoolFlag{
 				Name: "b, bia",
 				Usage: "Pretend to be a burned-in-address",
@@ -75,11 +79,16 @@ func main() {
 }
 
 func show(c *cli.Context)  {
-	result, err := getCurrentMacInfo(c.Args().First())
-	if err != nil {
-		log.Fatal(err)
+	iface := c.GlobalString("i")
+	if iface != "" {
+		result, err := getCurrentMacInfo(iface)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(result)
+	} else {
+		log.Fatal("No target device provided via -i, --interface argument")
 	}
-	fmt.Println(result)
 }
 
 func list(c *cli.Context) {
@@ -107,36 +116,59 @@ func search(c *cli.Context) {
 }
 
 func ending(c *cli.Context) {
-	err := spoofMacEnding(c.Args().First())
-	if err != nil {
-		log.Fatal(err)
+	iface := c.GlobalString("i")
+	if iface != "" {
+		err := spoofMacEnding(iface)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Fatal("No target device provided via -i, --interface argument")
 	}
 }
 
 func another(c *cli.Context) {
-	err := spoofMacAnother(c.Args().First())
-	if err != nil {
-		log.Fatal(err)
+	iface := c.GlobalString("i")
+	if iface != "" {
+		err := spoofMacAnother(iface)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Fatal("No target device provided via -i, --interface argument")
 	}
 }
 
 func any(c *cli.Context) {
-	err := spoofMacAny(c.Args().First())
-	if err != nil {
-		log.Fatal(err)
+	iface := c.GlobalString("i")
+	if iface != "" {
+		err := spoofMacAny(iface)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Fatal("No target device provided via -i, --interface argument")
 	}
 }
 
 func permanent(c *cli.Context) {
-	err := revertMac(c.Args().First())
-	if err != nil {
-		log.Fatal(err)
+	iface := c.GlobalString("i")
+	if iface != "" {
+		err := revertMac(iface)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Fatal("No target device provided via -i, --interface argument")
 	}
 }
 
 func random(c *cli.Context) {
-	err := spoofMacRandom(c.Args().First(), c.GlobalBool("b"))
-	if err != nil {
-		log.Fatal(err)
+	iface := c.GlobalString("i")
+	if iface != "" {
+		err := spoofMacRandom(iface, c.GlobalBool("b"))
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
