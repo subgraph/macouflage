@@ -28,7 +28,6 @@ func main() {
 	app.Commands = []cli.Command {
 		{
 			Name: "show",
-			Aliases: []string{"s"},
 			Usage: "Print the MAC address and exit",
 			Action: show,
 		},
@@ -56,6 +55,11 @@ func main() {
 			Name: "random",
 			Usage: "Set fully random MAC",
 			Action: random,
+		},
+		{
+			Name: "popular",
+			Usage: "Set a MAC from the popular vendors list",
+			Action: popular,
 		},
 		{
 			Name: "list",
@@ -175,6 +179,20 @@ func random(c *cli.Context) {
 		if err != nil {
 			log.Fatal(err)
 		}
+	} else {
+		log.Fatal("No target device provided via -i, --interface argument")
+	}
+}
+
+func popular(c *cli.Context) {
+	iface := c.GlobalString("i")
+	if iface != "" {
+		err := spoofMacPopular(iface)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		log.Fatal("No target device provided via -i, --interface argument")
 	}
 }
 
