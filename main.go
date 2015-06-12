@@ -6,8 +6,24 @@ import (
 	"log"
 	"github.com/codegangsta/cli"
 )
+var AppHelpTemplate = `NAME:
+   {{.Name}} - {{.Usage}}
+USAGE:
+   {{.Name}} {{if .Flags}}-i/--interface <device> [-b/--bia] {{end}}command{{if .Flags}} [command options]{{end}} [arguments...]
+VERSION:
+   {{.Version}}{{if len .Authors}}
+AUTHOR(S):
+   {{range .Authors}}{{ . }}{{end}}{{end}}
+COMMANDS:
+   {{range .Commands}}{{join .Names ", "}}{{range .Subcommands}}{{ " (" }}{{ join .Names "|"}}{{ ")" }}{{end}}{{ "\t\t" }}{{.Usage}}
+   {{end}}{{if .Flags}}
+GLOBAL OPTIONS:
+   {{range .Flags}}{{.}}
+   {{end}}{{end}}
+`
 
 func main() {
+	cli.AppHelpTemplate = AppHelpTemplate
 	app := cli.NewApp()
 	app.Name = "macouflage"
 	app.Usage ="macouflage is a MAC address anonymization tool"
@@ -24,7 +40,6 @@ func main() {
 				Usage: "Pretend to be a burned-in-address",
 			},
 	}
-	// BUG: Help template does not show subcommands by default, supply own template
 	app.Commands = []cli.Command {
 		{
 			Name: "show",
