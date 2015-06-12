@@ -14,6 +14,12 @@ func main() {
 	app.Version = "0.1"
 	app.Author = "David McKinney"
 	app.Email = "mckinney@subgraph.com"
+	app.Flags = []cli.Flag {
+			cli.BoolFlag{
+				Name: "b, bia",
+				Usage: "Pretend to be a burned-in-address",
+			},
+	}
 	// BUG: Help template does not show subcommands by default, supply own template
 	app.Commands = []cli.Command {
 		{
@@ -41,6 +47,11 @@ func main() {
 			Name: "permanent",
 			Usage: "Reset to original, permanent hardware MAC",
 			Action: permanent,
+		},
+		{
+			Name: "random",
+			Usage: "Set fully random MAC",
+			Action: random,
 		},
 		{
 			Name: "list",
@@ -118,6 +129,13 @@ func any(c *cli.Context) {
 
 func permanent(c *cli.Context) {
 	err := revertMac(c.Args().First())
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func random(c *cli.Context) {
+	err := spoofMacRandom(c.Args().First(), c.GlobalBool("b"))
 	if err != nil {
 		log.Fatal(err)
 	}

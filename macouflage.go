@@ -37,9 +37,9 @@ func getMacInfo(name string, macType string) (result string, err error) {
 	}
 	newMacVendor, err := lmf.FindVendorByMac(newMac.String())
 	if err != nil {
-		if strings.HasPrefix(err.Error(),
-			"No vendor found in OuiDb for vendor prefix") {
+		if err == err.(lmf.NoVendorError) {
 			newMacVendor.Vendor = "Unknown"
+			err = nil
 		} else {
 			return
 		}
@@ -169,3 +169,25 @@ func revertMac(name string) (err error) {
 	}
 	return
 }
+
+func spoofMacRandom(name string, bia bool) (err error) {
+	currentMacInfo, err := getCurrentMacInfo(name)
+	if err != nil {
+		return
+	}
+	fmt.Println(currentMacInfo)
+	changed, err := lmf.SpoofMacRandom(name, bia)
+	if err != nil {
+		return
+	}
+	if changed {
+		newMac, err2 := getMacInfo(name, "New MAC")
+		if err2 != nil {
+			err = err2
+			return
+		}
+		fmt.Printf(newMac)
+	}
+	return
+}
+
