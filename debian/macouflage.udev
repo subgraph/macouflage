@@ -1,2 +1,0 @@
-SUBSYSTEMS=="net", SUBSYSTEM=="net", RUN+="/usr/bin/macouflage-multi -m random"
-
