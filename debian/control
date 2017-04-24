@@ -1,0 +1,15 @@
+Source: macouflage
+Section: admin 
+Priority: optional
+Maintainer: David McKinney <mckinney@subgraph.com>
+Build-Depends: debhelper (>= 9.0.0), dh-systemd, dh-golang, lintian, golang-github-codegangsta-cli-dev, golang-subgraph-libmacouflage-dev
+Standards-Version: 3.9.8
+Homepage: https://www.github.com/subgraph/macouflage/
+Vcs-Git: https://github.com/subgraph/macouflage.git
+
+Package: macouflage
+Architecture: amd64
+Depends: ${misc:Depends}, ${misc:Built-Using}, ${shlibs:Depends}, golang, adduser, udev
+Description: MAC address anonymization toolkit for Subgraph OS
+ macouflage is a library and a set of tools for anonymizing MAC addresses
+ for Subgraph OS.
