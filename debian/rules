@@ -8,6 +8,9 @@ export DESTDIR := $(CURDIR)/debian/macouflage
 %:
 	dh $@ --buildsystem=golang --with=golang --with=systemd
 
+override_dh_auto_build:
+	dh_auto_build -- -buildmode=pie -pkgdir=$$(mktemp -d -p $(CURDIR))
+
 override_dh_auto_install:
 	dh_auto_install
 	rm -rf $(CURDIR)/debian/macouflage/usr/share/gocode
