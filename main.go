@@ -1,11 +1,13 @@
 package main
 
 import (
-	"os"
 	"fmt"
 	"log"
-	"github.com/codegangsta/cli"
+	"os"
+
+	"github.com/urfave/cli"
 )
+
 var AppHelpTemplate = `NAME:
    {{.Name}} - {{.Usage}}
 USAGE:
@@ -26,83 +28,83 @@ func main() {
 	cli.AppHelpTemplate = AppHelpTemplate
 	app := cli.NewApp()
 	app.Name = "macouflage"
-	app.Usage ="macouflage is a MAC address anonymization tool"
+	app.Usage = "macouflage is a MAC address anonymization tool"
 	app.Version = "0.1"
 	app.Author = "David McKinney"
 	app.Email = "mckinney@subgraph.com"
-	app.Flags = []cli.Flag {
-			cli.StringFlag{
-				Name: "i, interface",
-				Usage: "Target device (required)",
-			},
-			cli.BoolFlag{
-				Name: "b, bia",
-				Usage: "Pretend to be a burned-in-address",
-			},
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "i, interface",
+			Usage: "Target device (required)",
+		},
+		cli.BoolFlag{
+			Name:  "b, bia",
+			Usage: "Pretend to be a burned-in-address",
+		},
 	}
-	app.Commands = []cli.Command {
+	app.Commands = []cli.Command{
 		{
-			Name: "show",
-			Usage: "Print the MAC address and exit",
+			Name:   "show",
+			Usage:  "Print the MAC address and exit",
 			Action: show,
 		},
 		{
-			Name: "ending",
-			Usage: "Don't change the vendor bytes (generate last three bytes: XX:XX:XX:??:??:??)",
+			Name:   "ending",
+			Usage:  "Don't change the vendor bytes (generate last three bytes: XX:XX:XX:??:??:??)",
 			Action: ending,
 		},
 		{
-			Name: "another",
-			Usage: "Set random vendor MAC of the same kind",
+			Name:   "another",
+			Usage:  "Set random vendor MAC of the same kind",
 			Action: another,
 		},
 		{
-			Name: "any",
-			Usage: "Set random vendor MAC of any kind",
+			Name:   "any",
+			Usage:  "Set random vendor MAC of any kind",
 			Action: any,
 		},
 		{
-			Name: "permanent",
-			Usage: "Reset to original, permanent hardware MAC",
+			Name:   "permanent",
+			Usage:  "Reset to original, permanent hardware MAC",
 			Action: permanent,
 		},
 		{
-			Name: "random",
-			Usage: "Set fully random MAC",
+			Name:   "random",
+			Usage:  "Set fully random MAC",
 			Action: random,
 		},
 		{
-			Name: "popular",
-			Usage: "Set a MAC from the popular vendors list",
+			Name:   "popular",
+			Usage:  "Set a MAC from the popular vendors list",
 			Action: popular,
 		},
 		{
-			Name: "list",
-			Usage: "Print known vendors",
+			Name:   "list",
+			Usage:  "Print known vendors",
 			Action: list,
 			Subcommands: []cli.Command{
 				{
-					Name: "popular",
-					Usage: "Print known popular vendors",
+					Name:   "popular",
+					Usage:  "Print known popular vendors",
 					Action: listPopular,
 				},
 			},
 		},
 		{
-			Name: "search",
-			Usage: "Search vendor names",
+			Name:   "search",
+			Usage:  "Search vendor names",
 			Action: search,
 		},
 		{
-			Name: "mac",
-			Usage: "Set the MAC XX:XX:XX:XX:XX:XX",
+			Name:   "mac",
+			Usage:  "Set the MAC XX:XX:XX:XX:XX:XX",
 			Action: mac,
 		},
 	}
 	app.Run(os.Args)
 }
 
-func show(c *cli.Context)  {
+func show(c *cli.Context) {
 	iface := c.GlobalString("i")
 	if iface != "" {
 		result, err := getCurrentMacInfo(iface)
